@@ -172,3 +172,7 @@
   position: absolute;
   right: 0;
 }
+
+.button:hover {
+  opacity: 0.9;
+}

@@ -1,20 +1,46 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import styles from './login.module.css';
 import data from '../../data/login.json';
 import classNames from 'classnames';
 import { FaArrowCircleLeft } from 'react-icons/fa';
 import { MdOutlineEmail, MdLockOutline } from 'react-icons/md';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
+import { login } from '../../services/api';
+import { AuthContext } from '../../contexts/AuthContext';
 
 const Login = () => {
+  const { setUser } = useContext(AuthContext);
   const texts = data['en'];
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [see, setSee] = useState('password');
 
+  const loginApp = async () => {
+    if (email === '' || password === '') {
+      console.warn('Required Params');
+      return;
+    }
+
+    const data = {
+      'email-address': email,
+      password,
+    };
+
+    try {
+      const result = await login(data);
+      console.log(result);
+      setUser('logged in');
+    } catch (error) {
+      console.warn(error);
+    }
+  };
+
   return (
     <div className={styles.container}>
-      <FaArrowCircleLeft name="arrow-circle-left" className={styles.icon} />
+      <Link to="/" className={styles.icon}>
+        <FaArrowCircleLeft name="arrow-circle-left" />
+      </Link>
       <div className={styles.form}>
         <div className={styles.head}>
           <h1 className={styles.title}>{texts.title}</h1>
@@ -58,31 +84,29 @@ const Login = () => {
           </div>
         </div>
         <div className={styles.section}>
-          <button className={styles.button} onClick={() => {}}>
+          <button className={styles.button} onClick={loginApp}>
             <span className={styles.buttonText}>{texts.login}</span>
           </button>
-          <buttton className={styles.forgot} onClick={() => {}}>
+          <Link className={styles.forgot} to="/">
             <span className={styles.link}>{texts.forgot}</span>
-          </buttton>
+          </Link>
         </div>
         <p className={styles.labelOr}>{texts.continue}</p>
       </div>
       <div className={styles.section}>
-        <div>
-          <button className={styles.buttonGoogle}>
-            <img
-              src="https://avatars.githubusercontent.com/u/1342004?s=200&v=4"
-              className={styles.google}
-            />
-            <span className={styles.textGoogle}>{texts.login_with_google}</span>
-          </button>
-        </div>
+        <button className={styles.buttonGoogle}>
+          <img
+            src="https://avatars.githubusercontent.com/u/1342004?s=200&v=4"
+            className={styles.google}
+          />
+          <span className={styles.textGoogle}>{texts.login_with_google}</span>
+        </button>
         <div className={styles.signup}>
           <p className={styles.label}>
             {texts.createAccount}
-            <a onClick={() => {}}>
+            <Link to="/signup">
               <span className={styles.link}> {texts.signup}</span>
-            </a>
+            </Link>
           </p>
         </div>
       </div>
